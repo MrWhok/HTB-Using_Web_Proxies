@@ -11,6 +11,7 @@
     2. [ZAP Fuzzer](#zap-fuzzer)
 3. [Web Scanner](#web-scanner)
     1. [ZAP Scanner](#zap-scanner)
+4. [Skills Assessment](#skills-assessment)
 
 ## Web Proxy
 ### Intercepting Web Requests
@@ -97,3 +98,48 @@
     ![alt text](<Assets/ZAP Scanner - 1.png>)
 
     We can see it has `OS Remote Command Injection`. By using this url, `http://94.237.59.225:52774/devtools/ping.php?ip=127.0.0.1;cat /flag.txt`, we can get the flag. The answer is `HTB{5c4nn3r5_f1nd_vuln5_w3_m155}`.
+
+## Skills Assessment
+### Skills Assessment - Using Web Proxies
+1. The /lucky.php page has a button that appears to be disabled. Try to enable the button, and then click it to get the flag.
+
+    In here, i used `ZAP` with UHD feature to do this challenge. We can click second button on the left pane and do hard refresh, `ctrl+shift+R`. After that, click step until we intercept the response section.
+
+    ![alt text](<Assets/Skills Assessment - 1.png>)
+
+    We can see the submit button is disabled. To enable it, just remove `disabled`. We can click `continue`. Then, click the flag button. The answer is `HTB{d154bl3d_bu770n5_w0n7_570p_m3}`.
+
+2. The /admin.php page uses a cookie that has been encoded multiple times. Try to decode the cookie until you get a value with 31-characters. Submit the value as the answer.
+
+    We can intercept the response and get the user cookies.
+
+    ![alt text](<Assets/Skills Assessment - 2.png>)
+
+    Then, select cookies value and right click. We can choose encode/decode option. From that, we can select Full URL decode -> Base64 decode. The asnwer is `3dac93b8cd250aa8c1a36fffc79a17a`.
+
+3. Once you decode the cookie, you will notice that it is only 31 characters long, which appears to be an md5 hash missing its last character. So, try to fuzz the last character of the decoded md5 cookie with all alpha-numeric characters, while encoding each request with the encoding methods you identified above. (You may use the "alphanum-case.txt" wordlist from Seclist for the payload)
+
+    To solve this,i change to use `burpsuite`. We need to intercept the request of /admin.php. We can try to fuzz from there. Here how it looks like.
+
+    ![alt text](<Assets/Skills Assessment - 3.png>) 
+
+    Once we have done, we can start the attak. We can look the response with different length. 
+
+    ![alt text](<Assets/Skills Assessment - 4.png>)
+
+    The answer is `HTB{burp_1n7rud3r_n1nj4!}`.
+
+4. You are using the 'auxiliary/scanner/http/coldfusion_locale_traversal' tool within Metasploit, but it is not working properly for you. You decide to capture the request sent by Metasploit so you can manually verify it and repeat it. Once you capture the request, what is the 'XXXXX' directory being called in '/XXXXX/administrator/..'?
+
+    To solve this, we can use metasploit and set the `PROXIES`. 
+
+    ```bash
+    use auxiliary/scanner/http/coldfusion_locale_traversal
+    set PROXIES HTTP:127.0.0.1:8080
+    set RHOSTS 83.136.254.49
+    set RPORT 40637
+    run
+    ```
+    ![alt text](<Assets/Skills Assessment - 5.png>)
+
+    The answer is `CFIDE`.
