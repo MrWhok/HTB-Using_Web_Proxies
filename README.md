@@ -6,6 +6,9 @@
     2. [Repeating Requests](#repeating-requests)
     3. [Encoding/Decoding](#encodingdecoding)
     4. [Proxying Tools](#proxying-tools)
+2. [Web Fuzzer](#web-fuzzer)
+    1. [Burp Intruder](#burp-intruder)
+    2. [ZAP Fuzzer](#zap-fuzzer)
 
 ## Web Proxy
 ### Intercepting Web Requests
@@ -57,3 +60,27 @@
 
     The answer is `msf test file`.
 
+## Web Fuzzer
+### Burp Intruder
+#### Challenges
+1. Use Burp Intruder to fuzz for '.html' files under the /admin directory, to find a file containing the flag.
+
+    We can solve this by using intruder option on burptsuite. After we send request to the intruder, we can set several setting. 
+
+    ![alt text](<Assets/Burp Intruder - 1.png>)
+
+    Once we have done setting, we can click `Start Attack` button. After several tries, we will got 200 response code.
+
+    ![alt text](<Assets/Burp Intruder - 2.png>)
+
+    We can go to the browser and check `http://83.136.254.49:36811/admin/2010.html`. The answer is `HTB{burp_1n7rud3r_fuzz3r!}`.
+
+### ZAP Fuzzer
+#### Challenges
+1. The directory we found above sets the cookie to the md5 hash of the username, as we can see the md5 cookie in the request for the (guest) user. Visit '/skills/' to get a request with a cookie, then try to use ZAP Fuzzer to fuzz the cookie for different md5 hashed usernames to get the flag. Use the "top-usernames-shortlist.txt" wordlist from Seclists.
+
+    We can type `zaproxy` to open zap. Then, open browser option from there and type this url `83.136.252.27:56950/skills/`. AFter that, we need to refresh the browser. Back to our zap, click the request section and select attack -> fuzzer. Then, select the cookies value and click add. We can choose this `/usr/share/seclists/Usernames/top-usernames-shortlist.txt` as a payload and click add. Back to our payload option, choose `processors` and then add `MD5 Hash`. Then, we can start fuzzer.
+
+    ![alt text](<Assets/ZAP Fuzzer - 1.png>)
+
+    We can choose the response with code 200 and the response that has bigger size resp body bytes. The answer is `HTB{fuzz1n6_my_f1r57_c00k13}`.
