@@ -9,6 +9,8 @@
 2. [Web Fuzzer](#web-fuzzer)
     1. [Burp Intruder](#burp-intruder)
     2. [ZAP Fuzzer](#zap-fuzzer)
+3. [Web Scanner](#web-scanner)
+    1. [ZAP Scanner](#zap-scanner)
 
 ## Web Proxy
 ### Intercepting Web Requests
@@ -84,3 +86,14 @@
     ![alt text](<Assets/ZAP Fuzzer - 1.png>)
 
     We can choose the response with code 200 and the response that has bigger size resp body bytes. The answer is `HTB{fuzz1n6_my_f1r57_c00k13}`.
+
+## Web Scanner
+### ZAP Scanner
+#### Challenges
+1. Run ZAP Scanner on the target above to identify directories and potential vulnerabilities. Once you find the high-level vulnerability, try to use it to read the flag at '/flag.txt'
+
+    We can solve it by using `ZAP`. After opening `ZAP`, go to quick start tab and select automate scan. Once it finished, go to `alerts` section. We also can generate report.
+
+    ![alt text](<Assets/ZAP Scanner - 1.png>)
+
+    We can see it has `OS Remote Command Injection`. By using this url, `http://94.237.59.225:52774/devtools/ping.php?ip=127.0.0.1;cat /flag.txt`, we can get the flag. The answer is `HTB{5c4nn3r5_f1nd_vuln5_w3_m155}`.
